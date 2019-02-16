@@ -10,8 +10,6 @@ if (isset($_GET['slug'])) {
 
     if ('@' == $slug) {
         $url = 'https://twitter.com/' . TWITTER_USERNAME;
-    } else if (' ' == $slug) { // +
-        $url = 'https://plus.google.com/u/0/' . GOOGLE_PLUS_ID . '/posts';
     } else {
 
         $slug = preg_replace('/[^a-z0-9]/si', '', $slug);
