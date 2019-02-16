@@ -15,7 +15,7 @@ if (strpos($url, SHORT_URL) === 0) {
 }
 
 function generateRandomString($length = 10) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
     $randomString = '';
     for ($i = 0; $i < $length; $i++) {
@@ -44,6 +44,9 @@ if ($query->rowCount() > 0) { // If there’s already a short URL for this URL
     die(SHORT_URL . $result->fetch_object()->slug);
 } else {
     $slug = getShortURL();
+    if(isset($_GET['slug'])) {
+        $slug = $_GET['slug'];
+    }
     $pdo->query('INSERT INTO redirect (slug, url, date, hits) VALUES (?, ?, NOW(), 0)')->execute([$slug, $url]);
     header('HTTP/1.1 201 Created');
     echo SHORT_URL . '/' . $slug;

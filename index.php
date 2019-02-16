@@ -12,7 +12,7 @@ if (isset($_GET['slug'])) {
         $url = 'https://twitter.com/' . TWITTER_USERNAME;
     } else {
 
-        $slug = preg_replace('/[^a-z0-9]/si', '', $slug);
+        $slug = preg_replace('/[^a-zA-Z0-9]/si', '', $slug);
 
         $url = DEFAULT_URL . $_SERVER['REQUEST_URI'];
         if (is_numeric($slug) && strlen($slug) > 8) {
