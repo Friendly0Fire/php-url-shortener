@@ -14,25 +14,19 @@ if (isset($_GET['slug'])) {
 
         $slug = preg_replace('/[^a-z0-9]/si', '', $slug);
 
+        $url = DEFAULT_URL . $_SERVER['REQUEST_URI'];
         if (is_numeric($slug) && strlen($slug) > 8) {
             $url = 'https://twitter.com/' . TWITTER_USERNAME . '/status/' . $slug;
         } else {
+            $query = $pdo->query("SELECT * FROM redirect=?");
+            $query->execute([$slug]);
+            $details = $query->fetch();
 
-            $db = new MySQLi(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE);
-            $db->set_charset('utf8mb4');
-
-            $escapedSlug = $db->real_escape_string($slug);
-            $redirectResult = $db->query('SELECT url FROM redirect WHERE slug = "' . $escapedSlug . '"');
-
-            if ($redirectResult && $redirectResult->num_rows > 0) {
-                $db->query('UPDATE redirect SET hits = hits + 1 WHERE slug = "' . $escapedSlug . '"');
-                $url = $redirectResult->fetch_object()->url;
-            } else {
-                $url = DEFAULT_URL . $_SERVER['REQUEST_URI'];
+            if ($query->rowCount() > 0) {
+                $hitquery = $pdo->query("UPDATE redirect SET hits = hits + 1 WHERE slug=?");
+                $hitquery->execute([$slug]);
+                $url = $details['url'];
             }
-
-            $db->close();
-
         }
     }
 }

@@ -10,46 +10,41 @@ if (in_array($url, array('', 'about:blank', 'undefined', 'http://localhost/'))) 
     die('Enter a URL.');
 }
 
-// If the URL is already a short URL on this domain, don’t re-shorten it
 if (strpos($url, SHORT_URL) === 0) {
     die($url);
 }
 
-function nextLetter(&$str)
-{
-    $str = ('z' == $str ? 'a' : ++$str);
+function generateRandomString($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
 }
 
-function getNextShortURL($s)
+function getShortURL()
 {
-    $a = str_split($s);
-    $c = count($a);
-    if (preg_match('/^z*$/', $s)) { // string consists entirely of `z`
-        return str_repeat('a', $c + 1);
-    }
-    while ('z' == $a[--$c]) {
-        nextLetter($a[$c]);
-    }
-    nextLetter($a[$c]);
-    return implode($a);
-}
-
-$db = new mysqli(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE);
-$db->set_charset('utf8mb4');
-
-$url = $db->real_escape_string($url);
-
-$result = $db->query('SELECT slug FROM redirect WHERE url = "' . $url . '" LIMIT 1');
-if ($result && $result->num_rows > 0) { // If there’s already a short URL for this URL
-    die(SHORT_URL . $result->fetch_object()->slug);
-} else {
-    $result = $db->query('SELECT slug, url FROM redirect ORDER BY date DESC, slug DESC LIMIT 1');
-    if ($result && $result->num_rows > 0) {
-        $slug = getNextShortURL($result->fetch_object()->slug);
-        if ($db->query('INSERT INTO redirect (slug, url, date, hits) VALUES ("' . $slug . '", "' . $url . '", NOW(), 0)')) {
-            header('HTTP/1.1 201 Created');
-            echo SHORT_URL . $slug;
-            $db->query('OPTIMIZE TABLE `redirect`');
+    global $pdo;
+    $query = $pdo->query("SELECT * FROM redirect=?");
+    while(true){
+        $url = generateRandomString(5);
+        $query->execute([$url]);
+        if($query->rowCount() == 0) {
+            return $url;
         }
     }
+}
+
+$query = $pdo->query("SELECT slug FROM redirect WHERE url=?");
+$query->execute([$url]);
+$result = $query->fetch();
+if ($query->rowCount() > 0) { // If there’s already a short URL for this URL
+    die(SHORT_URL . $result->fetch_object()->slug);
+} else {
+    $slug = getShortURL();
+    $pdo->query('INSERT INTO redirect (slug, url, date, hits) VALUES (?, ?, NOW(), 0)')->execute([$slug, $url]);
+    header('HTTP/1.1 201 Created');
+    echo SHORT_URL . '/' . $slug;
 }
