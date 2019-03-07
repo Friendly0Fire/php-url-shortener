@@ -37,7 +37,7 @@ function getShortURL()
     }
 }
 
-$query = $pdo->query("SELECT slug FROM redirect WHERE url=?");
+$query = $pdo->prepare("SELECT slug FROM redirect WHERE url=?");
 $query->execute([$url]);
 $result = $query->fetch();
 if ($query->rowCount() > 0) { // If there’s already a short URL for this URL

@@ -35,6 +35,12 @@ javascript:(function(){const%20q=prompt('URL:');if(q){location='https://yourshor
 
 ``` js
 javascript:(function(){location='https://yourshortener.ext/shorten?url='+encodeURIComponent(location.href)}());
+```
+
+### Shorten this URL with custom slug
+
+``` js
+javascript:(function(){const%20q=prompt('Slug:');location='https://yourshortener.ext/shorten?url='+encodeURIComponent(location.href) + (q ? '&slug=' + q : '')}());
 ````
 
 ## License
