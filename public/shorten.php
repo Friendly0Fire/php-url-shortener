@@ -27,7 +27,7 @@ function generateRandomString($length = 10) {
 function getShortURL()
 {
     global $pdo;
-    $query = $pdo->prepare("SELECT * FROM redirect=?");
+    $query = $pdo->prepare("SELECT * FROM redirect WHERE url=?");
     while(true){
         $url = generateRandomString(5);
         $query->execute([$url]);
