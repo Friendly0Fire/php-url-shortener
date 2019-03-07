@@ -18,3 +18,9 @@ if($url != '') {
     $query->execute([$url]);
     die('Entries affected: ' . $query->rowCount());
 }
+if($slug != '') {
+    $query = $pdo->prepare("DELETE FROM redirect WHERE slug=?");
+    $query->execute([$slug]);
+    die('Entries affected: ' . $query->rowCount());
+}
+die('No entries found.');

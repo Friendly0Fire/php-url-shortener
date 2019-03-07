@@ -11,6 +11,9 @@ server {
   location /shorten {
     try_files $uri $uri/ /shorten.php?$args;
   }
+  location /remove {
+    try_files $uri $uri/ /remove.php?$args;
+  }
 
   location / {
     rewrite ^/(.*)$ /index.php?slug=$1 last;
