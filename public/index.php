@@ -2,6 +2,8 @@
 
 require '../config.php';
 
+$url = '';
+
 if (isset($_GET['slug'])) {
 
     $slug = $_GET['slug'];
@@ -12,7 +14,6 @@ if (isset($_GET['slug'])) {
 
         $slug = preg_replace('/[^a-zA-Z0-9]/si', '', $slug);
 
-        $url = DEFAULT_URL . $_SERVER['REQUEST_URI'];
         if (is_numeric($slug) && strlen($slug) > 8) {
             $url = 'https://twitter.com/' . TWITTER_USERNAME . '/status/' . $slug;
         } else {
@@ -28,3 +29,6 @@ if (isset($_GET['slug'])) {
         }
     }
 }
+
+if($url != '')
+    header('Location: ' . $url, null, 301);
