@@ -27,7 +27,7 @@ function generateRandomString($length = 10) {
 function getShortURL()
 {
     global $pdo;
-    $query = $pdo->query("SELECT * FROM redirect=?");
+    $query = $pdo->prepare("SELECT * FROM redirect=?");
     while(true){
         $url = generateRandomString(5);
         $query->execute([$url]);
@@ -47,7 +47,7 @@ if ($query->rowCount() > 0) { // If there’s already a short URL for this URL
     if(isset($_GET['slug'])) {
         $slug = $_GET['slug'];
     }
-    $pdo->query('INSERT INTO redirect (slug, url, date, hits) VALUES (?, ?, NOW(), 0)')->execute([$slug, $url]);
+    $pdo->prepare('INSERT INTO redirect (slug, url, date, hits) VALUES (?, ?, NOW(), 0)')->execute([$slug, $url]);
     header('HTTP/1.1 201 Created');
     echo SHORT_URL . '/' . $slug;
 }
