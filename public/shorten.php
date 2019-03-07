@@ -4,6 +4,15 @@ require '../config.php';
 
 header('Content-Type: text/plain;charset=UTF-8');
 
+if(!isset($_GET['token']))
+    die('Token required');
+$token = $_GET['token'];
+
+$query = $pdo->prepare("SELECT token FROM auth WHERE token=?");
+$query->execute([$token]);
+if($query->rowCount() == 0)
+    die('Token not found.');
+
 $url = isset($_GET['url']) ? urldecode(trim($_GET['url'])) : '';
 
 if (in_array($url, array('', 'about:blank', 'undefined', 'http://localhost/'))) {
