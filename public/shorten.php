@@ -1,17 +1,9 @@
 ﻿<?php
 
 require '../config.php';
+require '../token.php';
 
 header('Content-Type: text/plain;charset=UTF-8');
-
-if(!isset($_GET['token']))
-    die('Token required');
-$token = $_GET['token'];
-
-$query = $pdo->prepare("SELECT token FROM auth WHERE token=?");
-$query->execute([$token]);
-if($query->rowCount() == 0)
-    die('Token not found.');
 
 $url = isset($_GET['url']) ? urldecode(trim($_GET['url'])) : '';
 
@@ -50,7 +42,7 @@ $query = $pdo->prepare("SELECT slug FROM redirect WHERE url=?");
 $query->execute([$url]);
 if ($query->rowCount() > 0) { // If there’s already a short URL for this URL
     $result = $query->fetch();
-    die(SHORT_URL . $result['slug']);
+    die(SHORT_URL . '/' . $result['slug']);
 } else {
     $slug = getShortURL();
     if(isset($_GET['slug'])) {
