@@ -18,12 +18,12 @@ if (isset($_GET['slug'])) {
         if (is_numeric($slug) && strlen($slug) > 8) {
             $url = 'https://twitter.com/' . TWITTER_USERNAME . '/status/' . $slug;
         } else {
-            $query = $pdo->query("SELECT * FROM redirect=?");
+            $query = $pdo->prepare("SELECT * FROM redirect WHERE slug=?");
             $query->execute([$slug]);
             $details = $query->fetch();
 
             if ($query->rowCount() > 0) {
-                $hitquery = $pdo->query("UPDATE redirect SET hits = hits + 1 WHERE slug=?");
+                $hitquery = $pdo->prepare("UPDATE redirect SET hits = hits + 1 WHERE slug=?");
                 $hitquery->execute([$slug]);
                 $url = $details['url'];
             }
