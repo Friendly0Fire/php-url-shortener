@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require '../config.php';
 
@@ -48,9 +48,9 @@ function getShortURL()
 
 $query = $pdo->prepare("SELECT slug FROM redirect WHERE url=?");
 $query->execute([$url]);
-$result = $query->fetch();
 if ($query->rowCount() > 0) { // If there’s already a short URL for this URL
-    die(SHORT_URL . $result->fetch_object()->slug);
+    $result = $query->fetch();
+    die(SHORT_URL . $result['slug']);
 } else {
     $slug = getShortURL();
     if(isset($_GET['slug'])) {
