@@ -2,8 +2,6 @@
 
 require '../config.php';
 
-$url = DEFAULT_URL . '/';
-
 if (isset($_GET['slug'])) {
 
     $slug = $_GET['slug'];
@@ -30,10 +28,3 @@ if (isset($_GET['slug'])) {
         }
     }
 }
-
-header('Location: ' . $url, null, 301);
-
-$attributeValue = htmlspecialchars($url);
-?>
-<meta http-equiv=refresh content="0;URL=<?php echo $attributeValue; ?>"><a href="<?php echo $attributeValue; ?>">Continue</a>
-<script>location.href =<?php echo json_encode($url, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES); ?></script>
